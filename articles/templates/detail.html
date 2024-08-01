@@ -3,4 +3,11 @@
 {% block body %}
     <h1>{{article.title}}</h1>
     <p>{{article.content}}</p>
+    
+    <hr>
+
+    {% for comment in article.comment_set.all %}
+        <li>{{comment.content}}</li>
+    {% endfor %}
+
 {% endblock%}
