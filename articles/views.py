@@ -60,10 +60,9 @@ def comment_create(request, article_id):
             comment.save()
 
             # 2. integar(숫자)를 저장하는 방법
-            comment.article_id = article_id
-            comment.save()
+            # comment.article_id = article_id
+            # comment.save()
 
-            # 3.  
 
             return redirect('articles:detail', id=article_id)
 
@@ -71,8 +70,13 @@ def comment_create(request, article_id):
         return redirect('article:index')
 
 
+def comment_delete(request, article_id, id):
+    if request.method == 'POST':
+        comment = Comment.objects.get(id=id)
+        comment.delete()
+        return redirect('articles:detail',id=article_id)
 
-
+    return redirect('articles:detail', id=article_id)
 
 
 
