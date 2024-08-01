@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Article 
-from .forms import ArticleForm
+from .forms import ArticleForm, CommentForm
 
 # Create your views here.
 def index(request):
@@ -15,9 +15,11 @@ def index(request):
 
 def detail(request, id):
     article = Article.objects.get(id=id)
-
+    form = CommentForm()
+    
     context = {
         'article' : article,
+        'form' : form,
     }
 
     return render(request, 'detail.html', context)
@@ -41,9 +43,21 @@ def create(request):
     return render(request, 'form.html', context)
 
 
+def comment_create(request, article_id):
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)    # form 임시 저장, commit은 하지마!
 
+            # 1. 객체를 저장하는 방법
+            article = Article.objects.get(id=article_id)
+            comment.article = article
+            comment.save()
 
+            return redirect('articles:detail', id=article_id)
 
+    else:
+        return redirect('article:index')
 
 
 
