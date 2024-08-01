@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
-from .models import Article 
+from .models import Article, Comment
 from .forms import ArticleForm, CommentForm
 
 # Create your views here.
 def index(request):
     articles = Article.objects.all()
+    form = CommentForm
+
+    comments = Comment.objects.all()
 
     context = {
         'articles': articles,
@@ -16,6 +19,8 @@ def index(request):
 def detail(request, id):
     article = Article.objects.get(id=id)
     form = CommentForm()
+
+    comments = Comment.objects.filter(article_id = id)
     
     context = {
         'article' : article,
@@ -53,6 +58,12 @@ def comment_create(request, article_id):
             article = Article.objects.get(id=article_id)
             comment.article = article
             comment.save()
+
+            # 2. integar(숫자)를 저장하는 방법
+            comment.article_id = article_id
+            comment.save()
+
+            # 3.  
 
             return redirect('articles:detail', id=article_id)
 
